@@ -53,6 +53,7 @@ public class Client {
 		            } catch (NoSuchElementException ex) {
 		                JOptionPane.showMessageDialog(null, "Part Not found");
 		            }
+		            break;
 		        case 2:
 		        	String name = JOptionPane.showInputDialog("Type the name.");
 		        	String desc = JOptionPane.showInputDialog("Type the desc.");
