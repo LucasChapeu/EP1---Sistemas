@@ -1,5 +1,7 @@
 package rmiinterface;
 
+import java.util.UUID;
+
 import java.io.Serializable;
 
 public class Part implements Serializable{
@@ -19,7 +21,7 @@ public class Part implements Serializable{
 	public Part(String name, String desc, String id, String type) {
 		this.name = name;
 		this.desc = desc;
-		this.id = id;
+		this.id = UUID.randomUUID().toString();
 		this.type = type;
 	}
 	
