@@ -20,6 +20,8 @@ public class Client {
 	public static void main(String[] args) throws
     MalformedURLException, RemoteException, NotBoundException {				
 		
+		Part hold;
+		
 		boolean dotask = true;
 		do {			
 			
