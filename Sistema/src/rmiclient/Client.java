@@ -21,8 +21,7 @@ public class Client {
     MalformedURLException, RemoteException, NotBoundException {				
 		
 		boolean dotask = true;
-		do {
-			
+		do {			
 			
 			String[] optionsServer = {"Show All Servers", "Find Server", "Exit"};
 			

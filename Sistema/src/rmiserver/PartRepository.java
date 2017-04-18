@@ -34,6 +34,15 @@ public class PartRepository extends UnicastRemoteObject implements PartInterface
         return partList;
     }   
     
+    //IMPLEMENTAR NA INTERFACE E TESTAR
+    @Override
+    public boolean eraseParts() throws RemoteException {
+        this.partList.clear();    	
+        if (partList.size() == 0) return true;
+        else return false;
+        
+    }   
+    
     @Override
     public boolean addPart(String name, String desc, String type) throws RemoteException  {
     	String addID = UUID.randomUUID().toString();

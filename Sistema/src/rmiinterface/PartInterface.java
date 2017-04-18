@@ -9,5 +9,6 @@ public interface PartInterface extends Remote{
 	Part findPart(Part x) throws RemoteException;
 	List<Part> allParts() throws RemoteException;
 	boolean addPart(String name, String desc, String type) throws RemoteException;
+	boolean eraseParts() throws RemoteException;
 	
 }
