@@ -1,5 +1,5 @@
 package rmiserver;
-import java.util.UUID;
+//import java.util.UUID;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
@@ -32,39 +32,56 @@ public class PartRepository extends UnicastRemoteObject implements PartInterface
     @Override
     public List<Part> allParts() throws RemoteException {
         return partList;
-    }   
+    }
+    
+    @Override
+    public List<Part> allSubParts(Part part) throws RemoteException {
+    	return part.getSubList();        
+    }
+    
+    @Override
+    public List<Integer> allSubPartsQnt(Part part) throws RemoteException {
+    	return part.getSubListQnt();        
+    }    
     
     //IMPLEMENTAR NA INTERFACE E TESTAR
     @Override
     public boolean eraseParts() throws RemoteException {
-        this.partList.clear();    	
+        this.partList.clear();
         if (partList.size() == 0) return true;
-        else return false;
-        
+        else return false;        
     }   
     
     @Override
-    public boolean addPart(String name, String desc, String type) throws RemoteException  {
-    	String addID = UUID.randomUUID().toString();
-    	this.partList.add(new Part(name, desc, addID, type));
+    public boolean addPart(String name, String desc, String id, String type) throws RemoteException  {
+    	//String addID = UUID.randomUUID().toString();
+    	
+    	this.partList.add(new Part(name, desc, id, type));
 		return true;
     }
     
+    @Override
+    public boolean addSubPart(Part part, Part sub) throws RemoteException {
+    	
+    	Predicate<Part> predicate = x -> x.getId().equals(part.getId());
+        Part insert = partList.stream().filter(predicate).findFirst().get();
+    	
+    	insert.addSubPart(sub);    	
+    	return true;
+    }
+    
+    @Override
+    public boolean addSubPartQnt(Part part, Integer qnt) throws RemoteException {
+    	
+    	Predicate<Part> predicate = x -> x.getId().equals(part.getId());
+        Part insert = partList.stream().filter(predicate).findFirst().get();
+    	
+    	insert.addSubPartQnt(qnt);
+    	return true;
+    }
+    
     private static List<Part> initializeList() {
-        List<Part> list = new ArrayList<>();
-        
-        /*String idOne = UUID.randomUUID().toString();
-        String idTwo = UUID.randomUUID().toString();
-        String idThree = UUID.randomUUID().toString();
-        String idFour = UUID.randomUUID().toString();
-        String idFive = UUID.randomUUID().toString();
-        
-        list.add(new Part("Motor", "Peça importante para funcionamento do carro.", idOne, "Composta"));
-        list.add(new Part("Freios", "Peça para parar o carro.", idTwo, "Composta"));
-        list.add(new Part("Lanternas", "Peça para iluminar o ambiente.", idThree, "Primitiva"));
-        list.add(new Part("Pneu", "Peça para movimentar o carro.", idFour, "Primitiva"));
-        list.add(new Part("Maçaneta", "Peça importante para entrar no carro.", idFive, "Primitiva"));*/
-        
+        List<Part> list = new ArrayList<>();                       
         return list;
     }
 
