@@ -31,10 +31,10 @@ public class Part implements Serializable{
 			this.subPart = new ArrayList<>();
 			this.subPartQnt = new ArrayList<>();
 		}
-		else {
+		/*else {
 			this.subPart = null;
 			this.subPartQnt = null;
-		}
+		}*/
 	}
 	
 	public String getName() {
@@ -51,6 +51,14 @@ public class Part implements Serializable{
 	
 	public String getType() {
 		return type;
+	}
+	
+	public List<Part> getSubList() {
+		return this.subPart;
+	}
+	
+	public List<Integer> getSubListQnt() {
+		return this.subPartQnt;
 	}
 	
 	public String toString() {
