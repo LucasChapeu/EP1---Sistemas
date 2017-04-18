@@ -1,6 +1,6 @@
 package rmiinterface;
 
-import java.util.UUID;
+//import java.util.UUID;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;
@@ -24,22 +24,22 @@ public class Part implements Serializable{
 	public Part(String name, String desc, String id, String type) {
 		this.name = name;
 		this.desc = desc;
-		this.id = UUID.randomUUID().toString();
-		this.type = type;
-		
-		if (type == "Composta") {
-			this.subPart = new ArrayList<>();
-			this.subPartQnt = new ArrayList<>();
-		}
-		/*else {
-			this.subPart = null;
-			this.subPartQnt = null;
-		}*/
+		//this.id = UUID.randomUUID().toString();
+		this.id = id;
+		this.type = type;		
+		this.subPart = new ArrayList<>();
+		this.subPartQnt = new ArrayList<>();		
 	}
 	
 	public String getName() {
 		return name;
 	}
+	
+	public boolean setName(String name) {
+		this.name = name;
+		return true;
+	}
+	
 
 	public String getId() {
 		return id;
@@ -51,6 +51,16 @@ public class Part implements Serializable{
 	
 	public String getType() {
 		return type;
+	}
+	
+	public boolean addSubPart(Part part) {
+		this.subPart.add(part);
+		return true;
+	}
+	
+	public boolean addSubPartQnt(Integer qnt) {
+		this.subPartQnt.add(qnt);
+		return true;
 	}
 	
 	public List<Part> getSubList() {
