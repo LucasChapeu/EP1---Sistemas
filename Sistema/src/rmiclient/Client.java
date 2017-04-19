@@ -4,10 +4,16 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import rmiinterface.Part;
 import rmiinterface.PartInterface;
@@ -34,7 +40,13 @@ public class Client {
 			
 		    switch (choiceServer) {
 	    	case 0:
-	    		JOptionPane.showMessageDialog(null, "Pensar em uma maneira de armazenar servidores...");
+	    		
+	    		final String localhost = "localhost";
+	    	    int port = 1099;
+	    		final Registry registry = LocateRegistry.getRegistry(localhost, port);
+	            final String[] boundNames = registry.list();
+	    		JOptionPane.showMessageDialog(null, boundNames);
+	    		
 	    		break;
 	    	case 1:	    		
 	    		
@@ -60,7 +72,16 @@ public class Client {
 				            list.forEach(x -> {
 				                message.append(x.toString() + "\n");
 				            });
-				            JOptionPane.showMessageDialog(null, new String(message));
+				            				            
+				            JTextArea ta = new JTextArea(10, 10);
+			                ta.setText(new String(message));
+			                ta.setWrapStyleWord(true);
+			                ta.setLineWrap(true);
+			                ta.setCaretPosition(0);
+			                ta.setEditable(false);
+			                
+				            JOptionPane.showMessageDialog(null, new JScrollPane(ta));
+				           
 				            break;
 				        case 1:
 				            String id = JOptionPane.showInputDialog("Type the ID of the Part you want to find.");
@@ -95,18 +116,19 @@ public class Client {
 				    		    	case 1:				    		    						    		    	
 				    		    		
 				    		    		List<Part> listSub = look_up.allSubParts(response);
-							            StringBuilder messageSub = new StringBuilder();
-							            listSub.forEach(x -> {
-							                messageSub.append(x.toString() + "\n");
-							            });
-							            JOptionPane.showMessageDialog(null, new String(messageSub));							            
+				    		    		List<Integer> listQnt = look_up.allSubPartsQnt(response);
+				    					
+				    		    						    		    		
+				    		    		Iterator<Part> it1 = listSub.iterator();
+				    		    		Iterator<Integer> it2 = listQnt.iterator();
+				    		    		
+				    		    		StringBuilder messageSub = new StringBuilder();
+				    		    		
+				    		    		while(it1.hasNext() && it2.hasNext()){
+				    		    			messageSub.append(it1.toString() + " " + it2.toString());
+				    		    		}
 							            
-							            List<Integer> listQnt = look_up.allSubPartsQnt(response);
-							            StringBuilder messageQnt = new StringBuilder();
-							            listQnt.forEach(x -> {
-							                messageQnt.append(x.toString() + "\n");
-							            });
-							            JOptionPane.showMessageDialog(null, new String(messageQnt));							            							            
+							            JOptionPane.showMessageDialog(null, new String(messageSub));							            
 							            
 							            break;
 							            

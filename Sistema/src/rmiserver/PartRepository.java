@@ -3,6 +3,8 @@ package rmiserver;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,7 +87,7 @@ public class PartRepository extends UnicastRemoteObject implements PartInterface
         return list;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws RemoteException {
     	
     	boolean dotask;
 		do {
@@ -99,8 +101,14 @@ public class PartRepository extends UnicastRemoteObject implements PartInterface
     	
 		    switch (choice) {
 		    	case 0:
-		    		JOptionPane.showMessageDialog(null, "Pensar em uma maneira de armazenar servidores...");
+		    		
+		    		final String localhost = "localhost";
+		    	    int port = 1099;
+		    		final Registry registry = LocateRegistry.getRegistry(localhost, port);
+		            final String[] boundNames = registry.list();
+		    		JOptionPane.showMessageDialog(null, boundNames);
 		    		break;
+		    		
 		    	case 1:
 		    		String name = JOptionPane.showInputDialog("Type server name:");
 		    		try {    
