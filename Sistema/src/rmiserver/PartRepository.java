@@ -1,6 +1,6 @@
 package rmiserver;
-//import java.util.UUID;
 
+import java.util.UUID;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -9,6 +9,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.HashMap;
 
 import javax.swing.JOptionPane;
 
@@ -37,50 +38,43 @@ public class PartRepository extends UnicastRemoteObject implements PartInterface
     }
     
     @Override
-    public List<Part> allSubParts(Part part) throws RemoteException {
-    	return part.getSubList();        
-    }
-    
-    @Override
-    public List<Integer> allSubPartsQnt(Part part) throws RemoteException {
-    	return part.getSubListQnt();        
-    }    
-    
-    //IMPLEMENTAR NA INTERFACE E TESTAR
-    @Override
-    public boolean eraseParts() throws RemoteException {
-        this.partList.clear();
-        if (partList.size() == 0) return true;
-        else return false;        
-    }   
-    
-    @Override
-    public boolean addPart(String name, String desc, String id, String type) throws RemoteException  {
-    	//String addID = UUID.randomUUID().toString();
+    public HashMap<Part,Integer> allSubParts(Part part) throws RemoteException {
     	
-    	this.partList.add(new Part(name, desc, id, type));
+    	Predicate<Part> predicate = x -> x.getId().equals(part.getId());
+        Part retrieve = partList.stream().filter(predicate).findFirst().get();
+    	
+    	return retrieve.getSubList();        
+    }          
+    
+    @Override
+    public boolean addPart(String name, String desc, HashMap<Part, Integer> subTemp) throws RemoteException  {
+    	
+    	String addID = UUID.randomUUID().toString();
+    	
+    	boolean subExist = subTemp.isEmpty();
+    	String type;
+    	if (subExist) {
+    		type = "Primitiva";
+    	}
+    	else {
+    		type = "Composta";    
+    	}
+    	
+    	Part Insert = new Part(name, desc, addID, type);
+    	this.partList.add(Insert);
+    	createSubList(Insert, subTemp);
 		return true;
     }
     
     @Override
-    public boolean addSubPart(Part part, Part sub) throws RemoteException {
+    public boolean createSubList(Part part, HashMap<Part, Integer> subTemp) throws RemoteException {
     	
     	Predicate<Part> predicate = x -> x.getId().equals(part.getId());
         Part insert = partList.stream().filter(predicate).findFirst().get();
     	
-    	insert.addSubPart(sub);    	
+    	insert.addSubList(subTemp);    	
     	return true;
-    }
-    
-    @Override
-    public boolean addSubPartQnt(Part part, Integer qnt) throws RemoteException {
-    	
-    	Predicate<Part> predicate = x -> x.getId().equals(part.getId());
-        Part insert = partList.stream().filter(predicate).findFirst().get();
-    	
-    	insert.addSubPartQnt(qnt);
-    	return true;
-    }
+    }       
     
     private static List<Part> initializeList() {
         List<Part> list = new ArrayList<>();                       
@@ -110,16 +104,31 @@ public class PartRepository extends UnicastRemoteObject implements PartInterface
 		    		break;
 		    		
 		    	case 1:
-		    		String name = JOptionPane.showInputDialog("Type server name:");
-		    		try {    
-			            Naming.rebind("//localhost/" + name, new PartRepository(initializeList()));      
-			            System.err.println("Server ready");
-			        } catch (Exception e) {
-			            System.err.println("Server exception: " + e.getMessage());
-			        }
-		    		JOptionPane.showMessageDialog(null, "Server created!");
+		    		String name = JOptionPane.showInputDialog("Type server name:");		    		
 		    		
-		    		break;
+		    		if (name != null && name.length() > 0) {
+		    			try {    
+		    				name = name.replaceAll("\\s+","");
+				            Naming.rebind("//localhost/" + name, new PartRepository(initializeList()));      
+				            System.err.println("Server ready");
+				        } catch (Exception e) {
+				            System.err.println("Server exception: " + e.getMessage());
+				        }
+			    		JOptionPane.showMessageDialog(null, "Server created!");
+			    		
+			    		break;
+		    		}
+		    		
+		    		else {
+		    			if (name == null) {		    				
+			    			break;
+		    			}
+		    			else {
+		    				JOptionPane.showMessageDialog(null, "Name can't be empty.");
+		    				break;
+		    			}			    		
+		    		}
+		    		
 		    	default:
 		            //System.exit(0);
 		            break;	  	
