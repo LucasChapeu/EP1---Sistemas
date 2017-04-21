@@ -1,0 +1,1 @@
+javac src/rmiinterface/PartInterface.java src/rmiinterface/Part.java src/rmiserver/PartRepository.java src/rmiclient/Client.java
