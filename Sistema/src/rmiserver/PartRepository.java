@@ -108,7 +108,8 @@ public class PartRepository extends UnicastRemoteObject implements PartInterface
 		    		break;
 		    		
 		    	case 1:
-		    		String name = JOptionPane.showInputDialog("Type server name:");		    		
+		    		String name = JOptionPane.showInputDialog("Type server name:");	
+		    		name = name.replaceAll("\\s+","");
 		    		boolean teste = false;
 		    		
 		    		if (name != null && name.length() > 0) {
