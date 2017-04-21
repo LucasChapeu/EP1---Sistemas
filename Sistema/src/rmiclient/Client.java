@@ -10,9 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.WindowConstants;
 
 import rmiinterface.Part;
 import rmiinterface.PartInterface;
@@ -43,8 +46,9 @@ public class Client {
 	    		final String localhost = "localhost";
 	    	    int port = 1099;
 	    		final Registry registry = LocateRegistry.getRegistry(localhost, port);
-	            final String[] boundNames = registry.list();
-	    		JOptionPane.showMessageDialog(null, boundNames);
+	            final String[] names = registry.list();
+	            
+	    	    JOptionPane.showMessageDialog(null, names);
 	    		
 	    		break;
 	    	case 1:	    		
@@ -54,8 +58,13 @@ public class Client {
 	    		
 	    		if (servername != null && servername.length() > 0) {
 	    			servername = servername.replaceAll("\\s+","");
-	    			
-	    			look_up = (PartInterface) Naming.lookup("//localhost/" + servername);
+	    				    				
+	    			try{
+	    				look_up = (PartInterface) Naming.lookup("//localhost/" + servername);
+	    			} catch (NotBoundException e) {
+	    				JOptionPane.showMessageDialog(null,"There is no server named: " + servername);
+	    	            //e.printStackTrace();
+	    	        }
 					
 					if (look_up != null) JOptionPane.showMessageDialog(null, "Connected to " + servername + ".");					
 					else break;

@@ -51,8 +51,11 @@ public class PartRepository extends UnicastRemoteObject implements PartInterface
     	
     	String addID = UUID.randomUUID().toString();
     	
+    	boolean resposta = true;
     	boolean subExist = subTemp.isEmpty();
+    	
     	String type;
+    	
     	if (subExist) {
     		type = "Primitiva";
     	}
@@ -61,11 +64,12 @@ public class PartRepository extends UnicastRemoteObject implements PartInterface
     	}
     	
     	Part Insert = new Part(name, desc, addID, type);
-    	this.partList.add(Insert);
+    	resposta = this.partList.add(Insert);
+    	
     	createSubList(Insert, subTemp);
-		return true;
+		return resposta;
     }
-    
+      
     @Override
     public boolean createSubList(Part part, HashMap<Part, Integer> subTemp) throws RemoteException {
     	
@@ -98,24 +102,39 @@ public class PartRepository extends UnicastRemoteObject implements PartInterface
 		    		
 		    		final String localhost = "localhost";
 		    	    int port = 1099;
-		    		final Registry registry = LocateRegistry.getRegistry(localhost, port);
+		    		Registry registry = LocateRegistry.getRegistry(localhost, port);
 		            final String[] boundNames = registry.list();
 		    		JOptionPane.showMessageDialog(null, boundNames);
 		    		break;
 		    		
 		    	case 1:
 		    		String name = JOptionPane.showInputDialog("Type server name:");		    		
+		    		boolean teste = false;
 		    		
 		    		if (name != null && name.length() > 0) {
-		    			try {    
-		    				name = name.replaceAll("\\s+","");
-				            Naming.rebind("//localhost/" + name, new PartRepository(initializeList()));      
-				            System.err.println("Server ready");
-				        } catch (Exception e) {
-				            System.err.println("Server exception: " + e.getMessage());
-				        }
-			    		JOptionPane.showMessageDialog(null, "Server created!");
-			    		
+		    			
+		    			port = 1099;
+		    			registry = LocateRegistry.getRegistry("localhost", port);
+			            String[] names = registry.list();
+			            
+			            for (final String servers : names)
+			            {
+			            	if(servers.equals(name)) teste = true;
+			            }
+			            
+			            if(!teste){		    			
+			    			try {    
+			    				name = name.replaceAll("\\s+","");
+					            Naming.rebind("//localhost/" + name, new PartRepository(initializeList()));      
+					            System.err.println("Server ready");
+					        } catch (Exception e) {
+					            System.err.println("Server exception: " + e.getMessage());
+					        }
+				    		JOptionPane.showMessageDialog(null, "Server created!");
+			            }
+			            else{
+			            	JOptionPane.showMessageDialog(null, "There is already a server named: " + name);
+			            }
 			    		break;
 		    		}
 		    		
