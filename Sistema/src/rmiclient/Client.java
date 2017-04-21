@@ -10,12 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import javax.swing.JFrame;
+//import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.WindowConstants;
+//import javax.swing.ScrollPaneConstants;
+//import javax.swing.WindowConstants;
 
 import rmiinterface.Part;
 import rmiinterface.PartInterface;
@@ -27,12 +27,14 @@ public class Client {
 	public static void main(String[] args) throws
     MalformedURLException, RemoteException, NotBoundException {				
 		
-		//Sublista temporaria do cliente
+		//Lista de sub-peças temporaria do cliente
 		HashMap<Part, Integer> subList = new HashMap<Part, Integer>();
 		
+		//boolean para manter rodando caso o usuario queira
 		boolean dotask = true;
 		do {			
 			
+			//Opçoes para exibir lista de servidores ou entrar neles
 			String[] optionsServer = {"Show All Servers", "Find Server", "Exit"};
 			
 		    int choiceServer = JOptionPane.showOptionDialog(null, "Choose an action", "Server options",
@@ -62,16 +64,19 @@ public class Client {
 	    			try{
 	    				look_up = (PartInterface) Naming.lookup("//localhost/" + servername);
 	    			} catch (NotBoundException e) {
+	    				//Caso não exista o servidor procurado
 	    				JOptionPane.showMessageDialog(null,"There is no server named: " + servername);
 	    	            //e.printStackTrace();
 	    	        }
-					
+						    			
 					if (look_up != null) JOptionPane.showMessageDialog(null, "Connected to " + servername + ".");					
 					else break;
 					
+					//boolean para manter as opções do servidor rodando caso o usuario queira
 					boolean findmore;
 					do {
-					
+						
+						//opções dentro do servidor envolvendo peças
 					    String[] options = {"Show Parts", "Find Part", "Add Part", "Show SubList", "Clear SubList","Exit"};
 					
 					    int choice = JOptionPane.showOptionDialog(null, "Choose an action", "Server: " + servername,
@@ -101,6 +106,7 @@ public class Client {
 					        case 1:
 					            String id = JOptionPane.showInputDialog("Type the ID of the Part you want to find.");
 					            try {
+					            	//Resultados da busca de uma peça
 					                Part response = look_up.findPart(new Part(id));				                
 					                JOptionPane.showMessageDialog(null,
 					                				"Server: " + servername + "\n" +
@@ -111,8 +117,7 @@ public class Client {
 					                        "Results", JOptionPane.INFORMATION_MESSAGE);
 					                
 					                
-					                //Opções após busca de uma part				                				                
-					                
+					                //Opções após busca de uma peça				                				                					                
 					                String[] optionsPart = {"Add to Temporary SubList", "Show all subparts", "Exit"};
 					    			
 					    		    int choicePart = JOptionPane.showOptionDialog(null, "Choose an action for this part", "Part: " + response.getName(),

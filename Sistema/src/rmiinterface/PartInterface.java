@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface PartInterface extends Remote{
 	
+	//Métodos que serão implementados no servidor
 	Part findPart(Part x) throws RemoteException;
 	List<Part> allParts() throws RemoteException;
 	boolean addPart(String name, String desc, HashMap<Part, Integer> subTemp) throws RemoteException;	

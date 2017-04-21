@@ -21,22 +21,28 @@ public class PartRepository extends UnicastRemoteObject implements PartInterface
 	private static final long serialVersionUID = 1L;
     private List<Part> partList;
     
+    //Construtor com uma lista de Peças já inicializada
     protected PartRepository(List<Part> list) throws RemoteException {
         super();
         this.partList = list;
     }
     
+    //Encontra a peça na lista de peças do servidor a partir do ID
     @Override
     public Part findPart(Part part) throws RemoteException {
         Predicate<Part> predicate = x -> x.getId().equals(part.getId());
         return partList.stream().filter(predicate).findFirst().get();
     }
 
+    //Retorna a lista com todas as peças para o cliente
+    //Cliente então exibe a lista
     @Override
     public List<Part> allParts() throws RemoteException {
         return partList;
     }
     
+    //Encontra o objeto part na lista de peças do servidor
+    //Busca a lista de sub-peças desse part e envia para o cliente
     @Override
     public HashMap<Part,Integer> allSubParts(Part part) throws RemoteException {
     	
@@ -46,6 +52,9 @@ public class PartRepository extends UnicastRemoteObject implements PartInterface
     	return retrieve.getSubList();        
     }          
     
+    //Adiciona uma part na lista de peças do servidor
+    //Gera uma id única
+    //Define o tipo a partir da lista de sub-peças recebida
     @Override
     public boolean addPart(String name, String desc, HashMap<Part, Integer> subTemp) throws RemoteException  {
     	
@@ -69,7 +78,8 @@ public class PartRepository extends UnicastRemoteObject implements PartInterface
     	createSubList(Insert, subTemp);
 		return resposta;
     }
-      
+     
+    //É utilizado no método addPart para criar a lista de sub-peças de uma part nova
     @Override
     public boolean createSubList(Part part, HashMap<Part, Integer> subTemp) throws RemoteException {
     	
@@ -80,6 +90,7 @@ public class PartRepository extends UnicastRemoteObject implements PartInterface
     	return true;
     }       
     
+    //Inicializa a lista de parts do servidor
     private static List<Part> initializeList() {
         List<Part> list = new ArrayList<>();                       
         return list;
@@ -90,6 +101,7 @@ public class PartRepository extends UnicastRemoteObject implements PartInterface
     	boolean dotask;
 		do {
 			
+			//Opçoes para criar e exibir servidores
 			String[] options = {"Show All Servers", "Create Server", "Exit"};
 			
 		    int choice = JOptionPane.showOptionDialog(null, "Choose an action", "Option dialog",
@@ -109,7 +121,7 @@ public class PartRepository extends UnicastRemoteObject implements PartInterface
 		    		
 		    	case 1:
 		    		String name = JOptionPane.showInputDialog("Type server name:");	
-		    		name = name.replaceAll("\\s+","");
+		    		name = name.replaceAll("\\s+",""); //retira espaços no nome para evitar problemas
 		    		boolean teste = false;
 		    		
 		    		if (name != null && name.length() > 0) {
@@ -120,10 +132,12 @@ public class PartRepository extends UnicastRemoteObject implements PartInterface
 			            
 			            for (final String servers : names)
 			            {
+			            	//Condição para verificar servers com mesmo nome
 			            	if(servers.equals(name)) teste = true;
 			            }
 			            
-			            if(!teste){		    			
+			            if(!teste){	
+			            	//Tentativa de iniciar um server
 			    			try {    
 			    				name = name.replaceAll("\\s+","");
 					            Naming.rebind("//localhost/" + name, new PartRepository(initializeList()));      
@@ -133,7 +147,7 @@ public class PartRepository extends UnicastRemoteObject implements PartInterface
 					        }
 				    		JOptionPane.showMessageDialog(null, "Server created!");
 			            }
-			            else{
+			            else{			            	
 			            	JOptionPane.showMessageDialog(null, "There is already a server named: " + name);
 			            }
 			    		break;
